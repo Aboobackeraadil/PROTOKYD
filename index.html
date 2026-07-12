@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protokyd | Hardware Engineering & IoT Prototyping</title>
+    <meta name="description" content="An Electronics & Communication Engineering student using self-acquired rapid manufacturing, firmware, and wireless IoT skills to build functional physical systems.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&family=Space+Grotesk:wght=500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-matte: #0b0c0e;
+            --bg-alternate: #13161c;
+            --bg-card: rgba(25, 28, 34, 0.65);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-cyan: #00f0ff;
+            --accent-glow: rgba(0, 240, 255, 0.15);
+            --font-tech: 'Space Grotesk', monospace;
+            --font-body: 'Inter', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-matte);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+        }
+
+        @media (min-width: 768px) {
+            .container { padding: 0 2rem; }
+        }
+
+        .accent-text {
+            color: var(--accent-cyan);
+            font-family: var(--font-tech);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%; 
+            min-height: 48px; 
+            padding: 0.8rem 1.5rem;
+            font-family: var(--font-tech);
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: var(--transition);
+            cursor: pointer;
+            font-size: 0.95rem;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        @media (min-width: 576px) {
+            .btn { width: auto; }
+        }
+
+        .btn-solid {
+            background-color: var(--accent-cyan);
+            color: var(--bg-matte);
+            border: 1px solid var(--accent-cyan);
+            box-shadow: 0 4px 14px var(--accent-glow);
+        }
+
+        .btn-solid:hover {
+            background-color: transparent;
+            color: var(--accent-cyan);
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(11, 12, 14, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            height: 70px;
+        }
+
+        @media (min-width: 768px) {
+            .nav-container { height: 80px; }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            text-decoration: none;
+            z-index: 1001;
+            font-family: var(--font-tech);
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent-cyan);
+        }
+
+        .logo img {
+            height: 38px;
+            width: auto;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+
+        .logo:hover img {
+            filter: drop-shadow(0 0 8px var(--accent-cyan));
+        }
+
+        .nav-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .nav-toggle span {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .nav-toggle.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .nav-toggle.open span:nth-child(2) { opacity: 0; }
+        .nav-toggle.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: #0f1115;
+            padding: 100px 2rem 2rem 2rem;
+            gap: 2rem;
+            list-style: none;
+            transition: var(--transition);
+            border-left: 1px solid var(--border-color);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-links.open { right: 0; }
+
+        @media (min-width: 768px) {
+            .nav-toggle { display: none; }
+            .nav-links {
+                position: static;
+                flex-direction: row;
+                width: auto;
+                height: auto;
+                background: transparent;
+                padding: 0;
+                box-shadow: none;
+                border-left: none;
+                display: flex;
+                align-items: center;
+            }
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: var(--font-tech);
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        @media (min-width: 768px) {
+            .nav-links a { font-size: 0.95rem; }
+        }
+
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        .page-matte-dark {
+            background-color: var(--bg-matte);
+        }
+        .page-matte-light {
+            background-color: var(--bg-alternate);
+        }
+
+        .hero {
+            padding: 140px 0 70px 0;
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .hero { padding: 180px 0 100px 0; }
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        @media (min-width: 968px) {
+            .hero-grid {
+                grid-template-columns: 1.2fr 0.8fr;
+            }
+        }
+
+        .hero-content { width: 100%; }
+
+        .hero h1 {
+            font-family: var(--font-tech);
+            font-size: clamp(2.2rem, 5.5vw, 3.5rem); 
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+        }
+
+        .hero-ctas {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media (min-width: 576px) {
+            .hero-ctas { flex-direction: row; }
+        }
+
+        .hero-graphic-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+
+        .innovation-artwork {
+            width: 100%;
+            max-width: 550px;
+            height: auto;
+            filter: drop-shadow(0 0 35px rgba(0, 240, 255, 0.25)) brightness(1.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        @media (min-width: 768px) {
+            section { padding: 100px 0; }
+        }
+
+        .section-title {
+            font-family: var(--font-tech);
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            margin-bottom: 2.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .vision-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+        }
+
+        @media (min-width: 968px) {
+            .vision-grid { grid-template-columns: 0.9fr 1.1fr; gap: 4rem; align-items: center; }
+        }
+
+        .identity-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .profile-frame {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .identity-card:hover .profile-img {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .profile-frame::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            width: 12px;
+            height: 12px;
+            border-top: 2px solid var(--accent-cyan);
+            border-left: 2px solid var(--accent-cyan);
+        }
+
+        .profile-frame::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            right: -6px;
+            width: 12px;
+            height: 12px;
+            border-bottom: 2px solid var(--accent-cyan);
+            border-right: 2px solid var(--accent-cyan);
+        }
+
+        .identity-name {
+            font-family: var(--font-tech);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.5px;
+        }
+
+        .identity-subtitle {
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .vision-text p {
+            font-size: clamp(1rem, 2.2vw, 1.1rem);
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid-layout { gap: 2rem; }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        @media (min-width: 768px) {
+            .card { padding: 2.2rem; }
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        .skill-card-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.25rem;
+            filter: grayscale(40%) brightness(0.85);
+            transition: var(--transition);
+        }
+
+        .card:hover .skill-card-image {
+            filter: grayscale(0%) brightness(1);
+            border-color: var(--accent-cyan);
+        }
+
+        .card-tag {
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+            display: block;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card h3 {
+            font-family: var(--font-tech);
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            position: relative;
+            margin-bottom: 0.5rem;
+            z-index: 2;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .clean-project-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            margin-top: 1.25rem;
+            cursor: zoom-in;
+            transition: var(--transition);
+        }
+
+        .clean-project-image:hover {
+            border-color: var(--accent-cyan);
+            filter: brightness(1.1);
+        }
+
+        .badge-container { display: flex; flex-wrap: wrap; gap: 0.5rem; position: relative; z-index: 2; }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.75rem;
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border-radius: 4px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        @media (min-width: 480px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        }
+
+        .stat-item h4 {
+            font-family: var(--font-tech);
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            color: var(--accent-cyan);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        .contact-wrapper { width: 100%; max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 1.25rem; }
+
+        .form-group label {
+            display: block;
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 0.85rem 1rem;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        textarea.form-control { resize: vertical; min-height: 140px; }
+        .form-status { margin-top: 1rem; font-family: var(--font-tech); font-size: 0.9rem; display: none; }
+        .status-success { color: #10b981; display: block; }
+        .status-error { color: #ef4444; display: block; }
+
+        .social-matrix {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        @media (min-width: 480px) {
+            .social-matrix { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+        }
+
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 4px;
+            background-color: rgba(20, 22, 26, 0.85);
+            border: 1px solid var(--border-color);
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            font-family: var(--font-tech);
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .scroll-top-btn.visible { opacity: 1; visibility: visible; }
+        .scroll-top-btn:hover { border-color: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
+
+        .media-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 6, 7, 0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            padding: 1rem;
+        }
+
+        .media-modal.open { opacity: 1; visibility: visible; }
+        .modal-content-wrapper { max-width: 800px; width: 100%; text-align: center; position: relative; }
+        .modal-content-wrapper img { max-width: 100%; max-height: 75vh; border-radius: 6px; border: 1px solid var(--border-color); }
+        .modal-caption { font-family: var(--font-tech); color: var(--text-secondary); margin-top: 1rem; font-size: 0.9rem; }
+        .modal-close { position: absolute; top: -40px; right: 0; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: var(--font-tech); }
+
+        .project-helper-card {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.03) 0%, rgba(20, 22, 26, 0.75) 100%);
+            border: 1px solid rgba(0, 240, 255, 0.2) !important;
+        }
+
+        footer {
+            padding: 40px 0;
+            background: #060708;
+            border-top: 1px solid var(--border-color);
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-container {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 1.5rem;
+            align-items: center;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .footer-container { flex-direction: row; justify-content: space-between; text-align: left; }
+        }
+
+        .footer-socials { display: flex; gap: 1.5rem; }
+        .footer-socials a { color: var(--text-secondary); text-decoration: none; transition: var(--transition); }
+        .footer-socials a:hover { color: var(--accent-cyan); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <img src="adhi.png" alt="Protokyd Logo">
+                protokyd<span>.in</span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#vision">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Builds</a></li>
+                <li><a href="#blog">Project Blog</a></li>
+                <li><a href="#contact" class="btn btn-outline" style="padding: 0.5rem 1.2rem; min-height: auto; width: auto;">Let's Build</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero page-matte-dark">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <h1>Acquiring Engineering Skills to Build <span class="accent-text">Good Things</span></h1>
+                    <p>I am an Electronics and Communication Engineering student translating microarchitectures, clean software loops, and telemetry into physical systems. Let's design what comes next.</p>
+                    <div class="hero-ctas">
+                        <a href="#projects" class="btn btn-solid">See My Builds</a>
+                        <a href="#contact" class="btn btn-outline">Let's Build Your Project</a>
+                    </div>
+                </div>
+                <div class="hero-graphic-container">
+                    <img src="gear9.png" alt="Hardware Engineering Framework, Circuits, Gears and Growth Vectors" class="innovation-artwork">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="vision" class="page-matte-light">
+        <div class="container">
+            <h2 class="section-title">IDENTITY  &amp; AIM</h2>
+            <div class="vision-grid">
+                
+                <div class="identity-card">
+                    <div class="profile-frame">
+                        <img src="ad.jpg" alt="Aboobacker Aadil T.A." class="profile-img">
+                    </div>
+                    <h3 class="identity-name">Aboobacker Aadil T.A.</h3>
+                    <p class="identity-subtitle">Electronics Engineering Student | Tech content creator | Prototypist | Hobbyist </p>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 1rem;">
+                        LBS College of Engineering<br>Kasaragod, Kerala
+                    </p>
+                    <div class="badge-container" style="justify-content: center;">
+                        <span class="badge">Hardware Prototyping</span>
+                        <span class="badge">Embedded Firmware</span>
+                    </div>
+                </div>
+
+                <div class="vision-text">
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="font-family: var(--font-tech); font-size: 1.2rem; margin-bottom: 0.75rem; color: var(--text-primary);">[ PROFILE &amp; EXPERIENCE ]</h3>
+                        <p>I focus on acquiring concrete execution habits across silicon ecosystems, programming languages, and manufacturing tools. My technical background spans direct bare-metal processing setup, electronic layout fabrication, and logical scripting pipelines.</p>
+                        <p>As a team driver and technical organizer, I have spearheaded peer-led system development rooms, managed real-time structural assemblies, and trained classmates on modular circuit building blocks.</p>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+                        <h3 style="font-family: var(--font-tech); font-size: 1.2rem; margin-bottom: 0.75rem; color: var(--accent-cyan);">[ AIM &amp; KEY CORE OBJECTIVE ]</h3>
+                        <p>To bring advanced automation models smoothly down onto the physical plane—whether by configuring localized ultra-low-power telemetry tracking networks, streamlining system interfaces, or deploying non-blocking algorithm paradigms inside critical edge nodes.</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <h4>42+</h4>
+                            <p>Students and Peers Mentored</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>15+</h4>
+                            <p>Hands-on Labs &amp; Workshops Led</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="page-matte-dark">
+        <div class="container">
+            <h2 class="section-title">SKILLS - TECHNICAL CAPABILITIES</h2>
+            <div class="grid-layout">
+                
+                <div class="card">
+                    <img src="mc.jpg" alt="Microcontroller Architecture Lab" class="skill-card-image">
+                    <span class="card-tag">HARDWARE LAYER</span>
+                    <h3>Microcontrollers &amp; Hardware</h3>
+                    <p>Developing robust, stable systems across diverse silicon architectures, configuring registers, and optimizing peripheral pin assignments.</p>
+                    <div class="badge-container">
+                        <span class="badge" style="color: var(--accent-cyan)">ESP32</span>
+                        <span class="badge" style="color: var(--accent-cyan)">ARM Nucleo</span>
+                        <span class="badge" style="color: var(--accent-cyan)">Arduino &amp; Pi</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="coding.jpg" alt="Embedded Source Code" class="skill-card-image">
+                    <span class="card-tag">LOGIC LAYER</span>
+                    <h3>Firmware Engineering &amp; Coding</h3>
+                    <p>Writing deterministic scripts, real-time calculation handlers, and structured logic routines for automated hardware interaction.</p>
+                    <div class="badge-container">
+                        <span class="badge" style="color: var(--accent-cyan)">C++ / C</span>
+                        <span class="badge" style="color: var(--accent-cyan)">Python Dev</span>
+                        <span class="badge" style="color: var(--accent-cyan)">Data Parsing</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="iot.jpg" alt="IoT Cloud Hardware Interaction" class="skill-card-image">
+                    <span class="card-tag">DATA LAYER</span>
+                    <h3>Internet of Things (IoT)</h3>
+                    <p>Deploying smart, connected sensor networks and configuring ultra-low power states for independent monitoring devices.</p>
+                    <div class="badge-container">
+                        <span class="badge" style="color: var(--accent-cyan)">Edge Computing</span>
+                        <span class="badge" style="color: var(--accent-cyan)">Sleep Cycles</span>
+                        <span class="badge" style="color: var(--accent-cyan)">Sensor Arrays</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="wirelessimage.jpg" alt="RF Telemetry and Wireless Communication Signals" class="skill-card-image">
+                    <span class="card-tag">NETWORK LAYER</span>
+                    <h3>Wireless Telemetry</h3>
+                    <p>Building reliable short and long-range over-the-air communication channels, including custom HID transceiver linkages.</p>
+                    <div class="badge-container">
+                        <span class="badge" style="color: var(--accent-cyan)">Bluetooth BLE</span>
+                        <span class="badge" style="color: var(--accent-cyan)">RF Communications</span>
+                        <span class="badge" style="color: var(--accent-cyan)">HID Emulation</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="ai.jpg" alt="Artificial Intelligence Neural Network Visualization" class="skill-card-image">
+                    <span class="card-tag">INTELLIGENCE LAYER</span>
+                    <h3>AI in Embedded Systems</h3>
+                    <p>Integrating real-time digital signal transformations and localized computing directly into minimal physical setups.</p>
+                    <div class="badge-container">
+                        <span class="badge" style="color: var(--accent-cyan)">Signal Processing</span>
+                        <span class="badge" style="color: var(--accent-cyan)">FFT Frequency</span>
+                        <span class="badge" style="color: var(--accent-cyan)">Reactive Logic</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="3dimageweb.jpg" alt="3D Printer Hotend" class="skill-card-image">
+                    <span class="card-tag">MANUFACTURING LAYER</span>
+                    <h3>3D Printing &amp; CAD Modeling</h3>
+                    <p>Designing custom, structurally sound structural enclosures and moving mechanical assemblies to within precise millimeter standards.</p>
+                    <div class="badge-container">
+                        <span class="badge" style="color: var(--accent-cyan)">Fusion 360 CAD</span>
+                        <span class="badge" style="color: var(--accent-cyan)">FDM 3D Printing</span>
+                        <span class="badge" style="color: var(--accent-cyan)">Rapid Tooling</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="pcbfab.jpg" alt="Discrete Digital Logic Circuit Board" class="skill-card-image">
+                    <span class="card-tag">CIRCUIT LAYER</span>
+                    <h3>PCB Design &amp; Fabrication</h3>
+                    <p>Tracing distinct circuit tracking paths, arranging system components, and troubleshooting discrete hardware arrays.</p>
+                    <div class="badge-container">
+                        <span class="badge" style="color: var(--accent-cyan)">Schematic Layout</span>
+                        <span class="badge" style="color: var(--accent-cyan)">Hardware Traces</span>
+                        <span class="badge" style="color: var(--accent-cyan)">Discrete ICS</span>
+                    </div>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <span class="card-tag" style="color: var(--accent-cyan)">// COMMUNITY &amp; INSTRUCTION LAYER</span>
+                    <h3 style="font-size: 1.5rem;">Technical Workshops &amp; STEM Training</h3>
+                    <p style="font-size: 1.05rem;">Leading immersive peer environments, coordinating modular learning setups, and showing others how to move confidently from abstract schematics to working physical builds.</p>
+                    <div class="badge-container">
+                        <span class="badge">Hands-on Instruction</span>
+                        <span class="badge">Hardware Labs</span>
+                        <span class="badge">Peer Mentorship</span>
+                        <span class="badge">System Architecture Assembly</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="page-matte-light">
+        <div class="container">
+            <h2 class="section-title">COMPLETED &amp; ACTIVE BUILDS</h2>
+            <div class="grid-layout">
+                
+                <div class="card">
+                    <span class="card-tag">01 / HUMAN INTERFACE DESIGN</span>
+                    <h3>RFID Dialogue Punching Box</h3>
+                    <p>A custom hardware terminal leveraging contactless RFID sensing links to record real-time system state handshakes and execute distinct logic sequences.</p>
+                    <img src="rfidimage.jpg" alt="RFID Sensor Reader Antenna Module" class="clean-project-image zoomable-img" loading="lazy">
+                    <div class="badge-container" style="margin-top: 1.5rem;">
+                        <span class="badge">RFID / SPI Link</span>
+                        <span class="badge">Device Enclosure</span>
+                        <span class="badge">State Machines</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-tag">02 / HARDWARE HID EMULATION</span>
+                    <h3>Custom Navigation Joystick</h3>
+                    <p>Engineered a dedicated BLE Human Interface Device peripheral configured to run non-blocking control tracking matrices for enhanced 3D design tasks.</p>
+                    <img src="joystickimage.jpg" alt="Analog Joystick Hardware Electronic Components" class="clean-project-image zoomable-img" loading="lazy">
+                    <div class="badge-container" style="margin-top: 1.5rem;">
+                        <span class="badge">ESP32 BLE</span>
+                        <span class="badge">HID Emulation</span>
+                        <span class="badge">Firmware Loops</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-tag">03 / AVIONICS &amp; FLIGHT LOOPS</span>
+                    <h3>ESP32 Micro Drone</h3>
+                    <p>Designed a custom multirotor aerial system stabilizing real-time processing routines and over-the-air command links for standard video capture configurations.</p>
+                    <img src="droneimage.jpg" alt="Drone Micro Avionics Layout and Rotors" class="clean-project-image zoomable-img" loading="lazy">
+                    <div class="badge-container" style="margin-top: 1.5rem;">
+                        <span class="badge">ESP32 Core</span>
+                        <span class="badge">Avionics Array</span>
+                        <span class="badge">Wireless Telemetry</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="card-tag">04 / STRUCTURAL RAPID MANUFACTURING</span>
+                    <h3>3D Printed Modular Drone Frame</h3>
+                    <p>A structurally optimized, ultralight pultruded stick-frame component system calculated to achieve precise weight tolerances and motor sleeve clearances.</p>
+                    <img src="droneframe.png" alt="Additive Manufacturing 3D Printer Assembly" class="clean-project-image zoomable-img" loading="lazy">
+                    <div class="badge-container" style="margin-top: 1.5rem;">
+                        <span class="badge">Fusion 360 CAD</span>
+                        <span class="badge">FDM Optimization</span>
+                        <span class="badge">Carbon Fiber Interlocks</span>
+                    </div>
+                </div>
+
+            
+
+                <div class="card">
+                    <span class="card-tag">06 / DISCRETE SILICON LOGIC</span>
+                    <h3>Non-Programmable Line Follower</h3>
+                    <p>An autonomous vehicle relying strictly on discrete integrated circuits and active-low tracking sensor signals without deploying a microcontroller code loop.</p>
+                    <img src="linefollower.jpg" alt="Discrete Logic Integrated Circuits Trace Layout" class="clean-project-image zoomable-img" loading="lazy">
+                    <div class="badge-container" style="margin-top: 1.5rem;">
+                        <span class="badge">74LS14 / 74LS00</span>
+                        <span class="badge">Active-Low Sensors</span>
+                        <span class="badge">Analog Feedback</span>
+                    </div>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <span class="card-tag" style="color: var(--accent-cyan)">07 / ACADEMIC KNOWLEDGE SHARED</span>
+                    <h3>Peer PCB Design &amp; Fabrication Workshop</h3>
+                    <p>Conducted a structured technical training program for classmates and peers at LBS College of Engineering, detailing layout tracing, schematic captures, and hands-on modular printing methods.</p>
+                    <div class="badge-container" style="margin-top: 1rem;">
+                        <span class="badge">LBS College Ecosystem</span>
+                        <span class="badge">Schematic Transfers</span>
+                        <span class="badge">Etching &amp; Population Labs</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="blog" class="page-matte-dark">
+        <div class="container">
+            <h2 class="section-title">LAB NOTEBOOK &amp; MEDIA REPO</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin-bottom: 2.5rem; font-size: 0.95rem;">
+                Raw captures and firmware documentation notes pulled directly from my lab desk. Click images to expand schematics.
+            </p>
+            <div class="grid-layout">
+                <article class="card">
+                    <span class="card-tag">LOG ENTRY // FEB 2026</span>
+                    <h3>Debugging Low-Power ESP32 Sleep Node Cycles</h3>
+                    <p>Refining an external timer wakeup latch circuit to reduce idle currents down to microamps on my latest outdoor environment sensor node.</p>
+                    <img src="espsleep (1).jpg" alt="ESP32 Sleep Routine Schematic Traces" class="clean-project-image zoomable-img" loading="lazy">
+                    <div class="badge-container" style="margin-top:1.5rem;"><span class="badge">Hardware Optimization</span><span class="badge">IoT Links</span></div>
+                </article>
+                <article class="card">
+                    <span class="card-tag">LOG ENTRY // JAN 2026</span>
+                    <h3>Interfacing Python Automation with STM32 Registers</h3>
+                    <p>Wrote a quick custom C++ serial parser framework alongside a Python desktop dashboard interface to plot multi-channel telemetry streams in real-time.</p>
+                    <img src="stmimage.jpg" alt="Python Live Telemetry Mapping Terminal" class="clean-project-image zoomable-img" loading="lazy">
+                    <div class="badge-container" style="margin-top:1.5rem;"><span class="badge">C++ Parser</span><span class="badge">Python Automation</span></div>
+                </article>
+            </div>
+
+            <div class="card project-helper-card" style="margin-top: 4rem; text-align: center;">
+                <span class="card-tag" style="letter-spacing: 2px;">OPEN INFRASTRUCTURE COLLABORATION</span>
+                <h3 style="margin-bottom: 0.5rem;">Stuck on Your Own Hardware or Code Build?</h3>
+                <p style="max-width: 650px; margin: 0 auto 1.5rem auto;">I love helping peers design robust, functioning engineering systems. Whether it is a confusing microcontroller signal error, complex Python automation script, or a wireless protocol link, let's build it next.</p>
+                <button class="btn btn-solid" id="openHelperBtn" style="max-width: 250px; margin: 0 auto;">Let's Build Your Project</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="page-matte-light">
+        <div class="container">
+            <h2 class="section-title" style="display: block; text-align: center;">SECURE INTERACTION GATEWAY</h2>
+            <div class="contact-wrapper">
+                
+                <form id="secureContactForm" method="POST" action="https://api.web3forms.com/submit" novalidate>
+                    <input type="hidden" name="access_key" value="c46df67d-8094-483a-a692-2a35627fcd10">
+                    <input type="text" name="_gotcha" style="display:none">
+
+                    <div class="form-group">
+                        <label for="contactName">Your Identity / Name</label>
+                        <input type="text" id="contactName" name="name" class="form-control" placeholder="Jane Doe" required maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmail">Communication Relay / Email Address</label>
+                        <input type="email" id="contactEmail" name="email" class="form-control" placeholder="engineering@company.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMessage">Project Details / Message Payload</label>
+                        <textarea id="contactMessage" name="message" class="form-control" placeholder="Detail your hardware boards, microcontroller, software language, or design requirements..." required maxlength="2000"></textarea>
+                    </div>
+                    <button type="submit" id="submitBtn" class="btn btn-solid" style="width: 100%;">Transmit Project Payload</button>
+                    <div id="formStatus" class="form-status"></div>
+                </form>
+
+                <div style="margin-top: 3rem; text-align: center;">
+                    <h4 style="font-family: var(--font-tech); margin-bottom: 1.25rem; font-size: 0.9rem; color: var(--text-secondary);">DIRECT EXTERNAL ROUTING GATEWAYS</h4>
+                    <div class="social-matrix">
+                        <a href="https://instagram.com/protokyd" target="_blank" rel="noopener noreferrer" class="btn btn-outline">Instagram</a>
+                        <a href="https://youtube.com/@protokyd" target="_blank" rel="noopener noreferrer" class="btn btn-outline">YouTube</a>
+                        <a href="https://linkedin.com/aadiladhie" target="_blank" rel="noopener noreferrer" class="btn btn-outline">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-container">
+            <div>&copy; 2026 protokyd.in. All rights reserved.</div>
+            <div class="footer-socials">
+                <a href="https://github.com/aboobackeraadil" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://linkedin.com/aadiladhie" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Scroll back to top">↑</button>
+
+    <div class="media-modal" id="imageLightbox" role="dialog" aria-hidden="true">
+        <div class="modal-content-wrapper">
+            <button class="modal-close" id="closeLightboxBtn">&times; CLOSE</button>
+            <img src="" id="lightboxTargetImg" alt="Expanded Hardware Diagnostic Snapshot">
+            <div class="modal-caption" id="lightboxCaption"></div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.getElementById('navToggle');
+            const navLinks = document.getElementById('navLinks');
+            const links = navLinks.querySelectorAll('a');
+
+            navToggle.addEventListener('click', () => {
+                navToggle.classList.toggle('open');
+                navLinks.classList.toggle('open');
+            });
+
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+                    navToggle.classList.remove('open');
+                    navLinks.classList.remove('open');
+                });
+            });
+
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 400) {
+                    scrollTopBtn.classList.add('visible');
+                } else {
+                    scrollTopBtn.classList.remove('visible');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            const lightbox = document.getElementById('imageLightbox');
+            const lightboxImg = document.getElementById('lightboxTargetImg');
+            const lightboxCaption = document.getElementById('lightboxCaption');
+            const closeLightboxBtn = document.getElementById('closeLightboxBtn');
+            const zoomableImages = document.querySelectorAll('.zoomable-img');
+
+            zoomableImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    lightboxImg.src = img.src;
+                    lightboxCaption.textContent = img.alt + " [Lab Verification Active]";
+                    lightbox.classList.add('open');
+                    lightbox.setAttribute('aria-hidden', 'false');
+                });
+            });
+
+            const closeLightboxRoutine = () => {
+                lightbox.classList.remove('open');
+                lightbox.setAttribute('aria-hidden', 'true');
+            };
+
+            closeLightboxBtn.addEventListener('click', closeLightboxRoutine);
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) closeLightboxRoutine();
+            });
+
+            const openHelperBtn = document.getElementById('openHelperBtn');
+            openHelperBtn.addEventListener('click', () => {
+                const contactField = document.getElementById('contactMessage');
+                contactField.value = "Hey Aboobacker, I'm working on a project using [Insert Microcontroller Node] and trying to write [Python/C++] scripts for it. Let's build what's next.";
+                document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+                contactField.focus();
+            });
+
+            const form = document.getElementById('secureContactForm');
+            const statusBox = document.getElementById('formStatus');
+            const submitBtn = document.getElementById('submitBtn');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                statusBox.className = 'form-status';
+                statusBox.textContent = '';
+
+                const nameRaw = document.getElementById('contactName').value.trim();
+                const emailRaw = document.getElementById('contactEmail').value.trim();
+                const messageRaw = document.getElementById('contactMessage').value.trim();
+
+                const nameRegex = /^[a-zA-Z0-9\s.\-_]{2,100}$/;
+                const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?( Fletcher)?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+                if (!nameRegex.test(nameRaw)) {
+                    statusBox.textContent = "Validation Failure: Invalid Characters or Length in Name Field.";
+                    statusBox.classList.add('status-error');
+                    return;
+                }
+                if (!emailRegex.test(emailRaw)) {
+                    statusBox.textContent = "Validation Failure: Improperly structured Email Address formatting.";
+                    statusBox.classList.add('status-error');
+                    return;
+                }
+                if (messageRaw.length < 10 || messageRaw.length > 2000) {
+                    statusBox.textContent = "Validation Failure: Message payload bounds restricted to 10-2000 characters.";
+                    statusBox.classList.add('status-error');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Packing Transmission Assets...";
+                submitBtn.style.opacity = "0.6";
+
+                const targetUrl = form.getAttribute('action');
+                const formData = new FormData(form);
+
+                // Handshake logic handles standard API validation redirects or blocks gracefully
+                fetch(targetUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Handle server verification redirect instructions (such as Captchas or landing links)
+                        if (response.redirected) {
+                            statusBox.textContent = "Redirecting to security verification gateway...";
+                            statusBox.className = "form-status status-success";
+                            window.location.href = response.url;
+                            return;
+                        }
+
+                        statusBox.textContent = "Payload verified. Project details transmitted successfully.";
+                        statusBox.className = "form-status status-success";
+                        form.reset();
+                    } else {
+                        response.json().then(data => {
+                            if (data && Object.hasOwn(data, 'errors')) {
+                                statusBox.textContent = data["errors"].map(error => error["message"]).join(", ");
+                            } else {
+                                statusBox.textContent = "Transmission Failure: Gateway dropped data packet.";
+                            }
+                            statusBox.className = 'form-status status-error';
+                        }).catch(() => {
+                            // Non-JSON tracking response: fall back to a manual standard submit loop
+                            statusBox.textContent = "API Checkpoint Prompted. Loading security view...";
+                            statusBox.className = 'form-status status-error';
+                            form.submit();
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Network link intercept handler: ", error);
+                    // Force complete HTML fallback transmission if CORS configurations strict-reject background redirects
+                    statusBox.textContent = "Securing transmission via secondary verification gateway...";
+                    statusBox.className = 'form-status status-success';
+                    
+                    setTimeout(() => {
+                        form.submit();
+                    }, 1000);
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = "Transmit Project Payload";
+                        submitBtn.style.opacity = "1";
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
